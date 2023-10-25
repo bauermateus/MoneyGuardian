@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "820851111698",
+    "project_id": "money-guardian-1340c",
+    "storage_bucket": "money-guardian-1340c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820851111698:android:280a68349fdbb9735525cb",
+        "android_client_info": {
+          "package_name": "com.mbs.moneyguardian"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvRT9zqA-1hpYncUVFE1tYKb6yFMr93O8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
