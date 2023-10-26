@@ -12,7 +12,20 @@
           "package_name": "com.mbs.moneyguardian"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "820851111698-02ad5umc8mj9u3f3vhvr55heokf78038.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mbs.moneyguardian",
+            "certificate_hash": "b5b32ed8c8c5f1f58533e170bb54443c7a770d91"
+          }
+        },
+        {
+          "client_id": "820851111698-59rtapedtje6apk9auftagpvml8l9odu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAvRT9zqA-1hpYncUVFE1tYKb6yFMr93O8"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820851111698-59rtapedtje6apk9auftagpvml8l9odu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

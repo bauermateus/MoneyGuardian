@@ -5,8 +5,8 @@ plugins {
 
 
 android {
-    namespace = "com.mbs.core.data"
-    compileSdk = 33
+    namespace = "com.mbs.moneyguardian.core.data"
+    compileSdk = rootProject.extra.get("compileSdkVersion") as Int
 }
 
 dependencies {
