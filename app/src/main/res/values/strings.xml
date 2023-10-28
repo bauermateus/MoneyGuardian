@@ -2,4 +2,6 @@
     <string name="app_name">Money Guardian</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fill_password_field">Preencha o campo senha.</string>
+    <string name="fill_email_field">Preencha o campo e-mail.</string>
 </resources>
