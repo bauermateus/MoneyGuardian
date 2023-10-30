@@ -4,4 +4,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fill_password_field">Preencha o campo senha.</string>
     <string name="fill_email_field">Preencha o campo e-mail.</string>
+    <string name="settings_text">Ajustes</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.mbs.moneyguardian
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mbs.moneyguardian.databinding.FragmentLoginBinding
+import com.mbs.moneyguardian.utils.startLoad
+import com.mbs.moneyguardian.utils.stopLoad
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
@@ -44,21 +47,30 @@ class LoginFragment : Fragment() {
         binding.loginButton.setOnClickListener {
             with(binding) {
                 if (email.text.isNullOrBlank()) {
-                    Toast.makeText(requireContext(),
-                        getString(R.string.fill_email_field), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.fill_email_field), Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 }
                 if (password.text.isNullOrBlank()) {
-                    Toast.makeText(requireContext(),
-                        getString(R.string.fill_password_field), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.fill_password_field), Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 }
-            Firebase.auth.signInWithEmailAndPassword(email.text.toString().trim(),
-                password.text.toString().trim())
-                .addOnSuccessListener {  result ->
-                    // TODO
-                }.addOnFailureListener {
-                    // TODO
+                startLoad(binding.root)
+                Firebase.auth.signInWithEmailAndPassword(
+                    email.text.toString().trim(),
+                    password.text.toString().trim()
+                ).addOnSuccessListener { result ->
+                    startActivity(Intent(requireContext(), MainActivity::class.java))
+                    requireActivity().finish()
+                }.addOnFailureListener { exception ->
+                    stopLoad(binding.root)
+                    Toast.makeText(requireContext(), exception.message, Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }

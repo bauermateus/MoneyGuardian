@@ -14,9 +14,11 @@ play-services-ads = "22.4.0"
 navigationVersion = "2.7.4"
 firebase-bom-version = "32.4.0"
 retrofitVersion = "2.9.0"
-gradle-version = "8.1.1"
+gradle-version = "8.1.2"
 kotlin-version = "1.9.0"
-google-services-version = "4.4.0"
+#noinspection GradleDependency
+google-services-version = "4.3.15"
+datastore-version = "1.0.0"
 
 
 [libraries]
@@ -28,6 +30,7 @@ espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref =
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "crashLyticsVersion" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+google-services = { module = "com.google.gms:google-services", version.ref = "google-services-version" }
 junit = { module = "junit:junit", version.ref = "junit" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroidVersion" }
 koin-androidx-navigation = { module = "io.insert-koin:koin-androidx-navigation", version.ref = "koinAndroidVersion" }
@@ -46,6 +49,7 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx"
 firebase-inappmessaging = { module = "com.google.firebase:firebase-inappmessaging-ktx" }
 firebase-inappmessaging-display = { module = "com.google.firebase:firebase-inappmessaging-display-ktx" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
+preferences-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-version" }
 
 
 [bundles]

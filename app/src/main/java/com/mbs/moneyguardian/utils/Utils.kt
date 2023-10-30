@@ -4,8 +4,10 @@ import android.content.res.ColorStateList
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -19,13 +21,13 @@ fun startLoad(root: ViewGroup) {
     pb.indeterminateTintList = ColorStateList
         .valueOf(ContextCompat.getColor(root.context, R.color.primary))
     pb.isVisible = true
-    val layoutParams = LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.WRAP_CONTENT,
-        LinearLayout.LayoutParams.WRAP_CONTENT
-    )
     pb.tag = "pb"
     pb.id = View.generateViewId()
     if (root is ConstraintLayout) {
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
         pb.layoutParams = layoutParams
         root.children.forEach {
             it.alpha = 0.4f
@@ -34,27 +36,23 @@ fun startLoad(root: ViewGroup) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(root)
         constraintSet.connect(pb.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        constraintSet.connect(
-            pb.id,
-            ConstraintSet.START,
-            ConstraintSet.PARENT_ID,
-            ConstraintSet.START
-        )
+        constraintSet.connect(pb.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
         constraintSet.connect(pb.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-        constraintSet.connect(
-            pb.id,
-            ConstraintSet.BOTTOM,
-            ConstraintSet.PARENT_ID,
-            ConstraintSet.BOTTOM
-        )
+        constraintSet.connect(pb.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
         constraintSet.applyTo(root)
     } else {
-        layoutParams.gravity = Gravity.CENTER
-        pb.layoutParams = layoutParams
         root.children.forEach {
             it.alpha = 0.4f
         }
-        root.addView(pb)
+        val layout = FrameLayout(root.context)
+        val layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
+        layoutParams.gravity = Gravity.CENTER
+        layout.layoutParams = layoutParams
+        layout.addView(pb)
+        root.addView(layout)
     }
 }
 

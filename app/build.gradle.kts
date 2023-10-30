@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.nav.args)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
 }
 
 android {
@@ -54,7 +56,7 @@ dependencies {
     implementation(libs.play.services.ads)
 
     //Firebase
-    implementation(platform(libs.firebase.bom))
+    implementation (platform("com.google.firebase:firebase-bom:32.4.0"))
     implementation(libs.bundles.firebase.tools)
 
     //Navigation
@@ -72,4 +74,7 @@ dependencies {
     //Retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
+
+    //DataStore
+    implementation(libs.preferences.datastore)
 }
