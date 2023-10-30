@@ -6,17 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.mbs.moneyguardian.auth.GoogleAuthUiClient
 import com.mbs.moneyguardian.databinding.FragmentLoginBinding
 import com.mbs.moneyguardian.utils.Constants
 import com.mbs.moneyguardian.utils.DataStoreManager
 import com.mbs.moneyguardian.utils.startLoad
 import com.mbs.moneyguardian.utils.stopLoad
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
@@ -34,6 +37,7 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        verifyCurrentUserState()
         setupLoginButton()
         setupToolbar()
     }
@@ -43,10 +47,33 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupGoogleSignIn() {
+//        val launcher = registerForActivityResult(ActivityResultContract.)
+    }
+
     private fun setupToolbar() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+    }
+
+    private fun verifyCurrentUserState() {
+        val shouldAutoLogin = lifecycleScope.async {
+            DataStoreManager(requireContext()).getBoolean(Constants.KEEP_ME_LOGGED)
+        }
+        lifecycleScope.launch {
+            if (shouldAutoLogin.await()) {
+                val currentUser = Firebase.auth.currentUser
+                if (currentUser != null) {
+                    performLogin()
+                }
+            }
+        }
+    }
+
+    private fun performLogin() {
+        startActivity(Intent(requireContext(), MainActivity::class.java))
+        requireActivity().finish()
     }
 
     private fun setupLoginButton() {
@@ -77,8 +104,7 @@ class LoginFragment : Fragment() {
                             binding.keepLoggedCheckbox.isChecked
                         )
                     }
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                    requireActivity().finish()
+                    performLogin()
                 }.addOnFailureListener { exception ->
                     stopLoad()
                     Toast.makeText(requireContext(), exception.message, Toast.LENGTH_SHORT)
@@ -87,4 +113,6 @@ class LoginFragment : Fragment() {
             }
         }
     }
+
+
 }

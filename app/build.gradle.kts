@@ -59,6 +59,9 @@ dependencies {
     implementation (platform("com.google.firebase:firebase-bom:32.4.0"))
     implementation(libs.bundles.firebase.tools)
 
+    //Services Auth
+    implementation(libs.services.auth)
+
     //Navigation
     implementation(libs.bundles.navigation)
 
