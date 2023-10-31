@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -80,4 +81,12 @@ dependencies {
 
     //DataStore
     implementation(libs.preferences.datastore)
+
+    //Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+}
+
+kapt {
+    correctErrorTypes = true
 }

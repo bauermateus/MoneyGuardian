@@ -2,9 +2,10 @@ package com.mbs.moneyguardian
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.FirebaseApp
 import com.mbs.moneyguardian.databinding.ActivityInitBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class InitActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInitBinding
     override fun onCreate(savedInstanceState: Bundle?) {

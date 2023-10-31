@@ -8,14 +8,16 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+
+
+const val PREFERENCES_DATA_STORE_NAME = "settings"
+val Context.preferencesDataStore: DataStore<Preferences> by preferencesDataStore(name = PREFERENCES_DATA_STORE_NAME)
 
 /** Class to store app preferences. */
-class DataStoreManager(
-    context: Context
-) {
-
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Constants.PREFERENCES)
-    private val dataStore = context.dataStore
+class PreferencesDataSourceImpl(
+    private val dataStore: DataStore<Preferences>
+): PreferencesDataSource {
 
     suspend fun getString(key: String): String? {
         val dataStoreKey = stringPreferencesKey(name = key)
@@ -33,20 +35,18 @@ class DataStoreManager(
         }
     }
 
-    suspend fun getBoolean(key: String): Boolean {
-        val dataStoreKey = booleanPreferencesKey(name = key)
-        val preferences = dataStore.data.first()
-        return preferences[dataStoreKey] ?: false
+    override suspend fun saveBoolean(key: String, value: Boolean) {
+        dataStore.edit { settings ->
+            val preferencesKey = booleanPreferencesKey(key)
+            settings[preferencesKey] = value
+        }
     }
 
-    suspend fun putBoolean(
-        key: String,
-        value: Boolean
-    ) {
-        val dataStoreKey = booleanPreferencesKey(name = key)
-        dataStore.edit { pref ->
-            pref[dataStoreKey] = value
-        }
+    override suspend fun getBoolean(key: String): Boolean? {
+        val preferencesKey = booleanPreferencesKey(key)
+        return dataStore.data.map {
+            it[preferencesKey]
+        }.first()
     }
 }
 

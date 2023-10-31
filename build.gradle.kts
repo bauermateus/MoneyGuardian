@@ -1,3 +1,5 @@
+
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -5,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.nav.args)  apply false
     alias(libs.plugins.crashlytics)  apply false
+    id("com.google.dagger.hilt.android") version "2.48.1" apply false
 }
 
 extra.apply{

@@ -6,6 +6,7 @@ core-ktx = "1.12.0"
 crashLyticsVersion = "2.9.9"
 espresso-core = "3.5.1"
 glide = "4.15.1"
+hiltAndroid = "2.48.1"
 junit = "4.13.2"
 koinAndroidVersion = "3.4.2"
 lifecycleVersion = "2.6.2"
@@ -32,11 +33,14 @@ ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit"
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "crashLyticsVersion" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-services = { module = "com.google.gms:google-services", version.ref = "google-services-version" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { module = "junit:junit", version.ref = "junit" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroidVersion" }
 koin-androidx-navigation = { module = "io.insert-koin:koin-androidx-navigation", version.ref = "koinAndroidVersion" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleVersion" }
+lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleVersion" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "play-services-ads" }
 navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationVersion" }
@@ -58,7 +62,7 @@ services-auth = { module = "com.google.android.gms:play-services-auth", version.
 navigation = ["navigation-fragment", "navigation-ui"]
 firebase-tools = ["firebase-analytics", "firebase-auth", "firebase-crashlytics", "firebase-firestore",
     "firebase-inappmessaging", "firebase-inappmessaging-display", "firebase-storage"]
-lifecycle-extensions = ["lifecycle-runtime-ktx", "lifecycle-viewmodel-ktx"]
+lifecycle-extensions = ["lifecycle-runtime-ktx", "lifecycle-viewmodel-ktx", "lifecycle-livedata-ktx"]
 koin = ["koin-android", "koin-androidx-navigation"]
 
 [plugins]
