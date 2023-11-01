@@ -65,8 +65,8 @@ class LoginFragment : Fragment() {
             context = requireActivity().applicationContext,
             oneTapClient = Identity.getSignInClient(requireActivity().applicationContext)
         )
-        onClick()
         observe()
+        onClick()
     }
 
     override fun onDestroyView() {

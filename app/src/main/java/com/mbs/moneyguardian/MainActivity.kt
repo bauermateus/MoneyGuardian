@@ -29,16 +29,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        lifecycleScope.launch {
-            if (!signInViewModel.didUserKeepLogin()) {
-                val authClient = GoogleAuthUiClient(
-                    context = this@MainActivity,
-                    oneTapClient = getSignInClient(this@MainActivity)
-                )
-                authClient.signOut()
+    private fun onClick() {
+        binding.fab.setOnClickListener {
+            binding.fab.apply {
+                rotation = 45f
             }
         }
     }
+
 }

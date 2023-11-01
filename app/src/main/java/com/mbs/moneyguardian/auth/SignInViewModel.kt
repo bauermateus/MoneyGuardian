@@ -40,12 +40,6 @@ class SignInViewModel @Inject constructor(private val preferences: PreferencesDa
         _state.update { SignInState() }
     }
 
-    fun keepMeLogged(b: Boolean) {
-        viewModelScope.launch {
-            preferences.saveBoolean(Constants.KEEP_ME_LOGGED, b)
-        }
-    }
-
     suspend fun didUserKeepLogin(): Boolean {
         return preferences.getBoolean(Constants.KEEP_ME_LOGGED) ?: false
     }
