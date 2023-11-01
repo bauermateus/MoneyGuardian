@@ -128,32 +128,16 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/keep_logged_checkbox"
-            style="@style/Widget.Material3.CompoundButton.CheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:fontFamily="@font/poppins"
-            android:text="Mantenha-me logado"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:layout_marginTop="4dp"
-            app:buttonTint="@color/primary"
-            app:checkedState="unchecked"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password_layout" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/login_button"
             style="@style/Material.Button.Standard"
             android:backgroundTint="@color/primary"
             android:text="Entrar"
+            android:layout_marginTop="28dp"
             android:textColor="@color/white"
-            android:layout_marginTop="2dp"
             app:layout_constraintEnd_toEndOf="@+id/password_layout"
             app:layout_constraintStart_toStartOf="@+id/password_layout"
-            app:layout_constraintTop_toBottomOf="@id/keep_logged_checkbox"
+            app:layout_constraintTop_toBottomOf="@+id/password_layout"
             tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.textview.MaterialTextView

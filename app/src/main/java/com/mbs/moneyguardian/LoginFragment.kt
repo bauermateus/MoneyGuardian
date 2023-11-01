@@ -165,7 +165,6 @@ class LoginFragment : Fragment() {
                         error = null
                     )
                 )
-                viewModel.keepMeLogged(binding.keepLoggedCheckbox.isChecked)
             }
         }.addOnFailureListener { exception ->
             viewModel.onSignInResult(
