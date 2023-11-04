@@ -62,8 +62,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         googleAuthUiClient = GoogleAuthUiClient(
-            context = requireActivity().applicationContext,
-            oneTapClient = Identity.getSignInClient(requireActivity().applicationContext)
+            context = requireActivity().applicationContext
         )
         observe()
         onClick()
