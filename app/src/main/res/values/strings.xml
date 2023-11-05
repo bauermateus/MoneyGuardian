@@ -1,10 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Money Guardian</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fill_password_field">Preencha o campo senha.</string>
     <string name="fill_email_field">Preencha o campo e-mail.</string>
     <string name="settings_text">Ajustes</string>
     <string name="web_client_id" tools:ignore="TypographyDashes">820851111698-59rtapedtje6apk9auftagpvml8l9odu.apps.googleusercontent.com</string>
     <string name="logged_as_text">Logado como</string>
+    <string name="no_account_text">Não há nenhuma conta do google no dispositivo.</string>
 </resources>

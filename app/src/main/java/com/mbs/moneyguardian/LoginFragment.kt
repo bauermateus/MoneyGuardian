@@ -23,14 +23,11 @@ import com.google.firebase.auth.auth
 import com.mbs.moneyguardian.data.auth.SignInResult
 import com.mbs.moneyguardian.data.source.GoogleAuthUiClient
 import com.mbs.moneyguardian.databinding.FragmentLoginBinding
-import com.mbs.moneyguardian.presentation.uiState.isLoginButtonEnabled
-import com.mbs.moneyguardian.presentation.uiState.loginButtonColorRes
 import com.mbs.moneyguardian.presentation.viewModel.SignInViewModel
+import com.mbs.moneyguardian.utils.extensions.toast
 import com.mbs.moneyguardian.utils.startLoad
 import com.mbs.moneyguardian.utils.stopLoad
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -69,7 +66,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         googleAuthUiClient = GoogleAuthUiClient(
-            context = requireActivity().applicationContext
+            context = requireContext()
         )
         observe()
         onClick()
@@ -84,11 +81,16 @@ class LoginFragment : Fragment() {
     private fun startGoogleSignIn() {
         lifecycleScope.launch {
             val signInIntentSender = googleAuthUiClient.signIn()
-            launcher.launch(
-                IntentSenderRequest.Builder(
-                    signInIntentSender ?: return@launch
-                ).build()
-            )
+            if (signInIntentSender != null) {
+                launcher.launch(
+                    IntentSenderRequest.Builder(
+                        signInIntentSender
+                    ).build()
+                )
+            } else {
+                toast(R.string.no_account_text)
+                stopLoad()
+            }
         }
     }
 
@@ -97,6 +99,7 @@ class LoginFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.signInWithGoogle.setOnClickListener {
+            startLoad(requireContext())
             startGoogleSignIn()
         }
     }
@@ -123,10 +126,10 @@ class LoginFragment : Fragment() {
     private fun validateFields() {
         with(binding) {
             email.doAfterTextChanged {
-                viewModel.validateEmail(it.toString())
+                viewModel.validateEmail(it.toString().trim())
             }
             password.doAfterTextChanged {
-                viewModel.validatePassword(it.toString())
+                viewModel.validatePassword(it.toString().trim())
             }
         }
     }
@@ -150,32 +153,23 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                viewModel.state.map { it.isSignInSuccessful }.collect {
-                        if (it) {
-                            navigate()
-                        }
+                viewModel.state.collect { state ->
+                    if (state.isSignInSuccessful) {
+                        navigate()
                     }
-
-                viewModel.state.map { it.signInError }.collect {
-                        it?.let {
-                            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                        }
+                    state.signInError?.let {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                     }
-
-                viewModel.state.map { it.loginButtonColorRes }.collect { colorRes ->
-                        binding.loginButton.setBackgroundColor(
-                            ContextCompat.getColor(
-                                requireContext(), colorRes
-                            )
+                    binding.loginButton.apply {
+                        setBackgroundColor(
+                            if (state.isEmailFilledCorrectly && state.isPasswordFilledCorrectly) {
+                                ContextCompat.getColor(requireContext(), R.color.primary)
+                            } else {
+                                ContextCompat.getColor(requireContext(), R.color.gray)
+                            }
                         )
-                    }
-
-                viewModel.state
-                    .map { it.isLoginButtonEnabled }
-                    .distinctUntilChanged()
-                    .collect { isEnabled ->
-                        binding.loginButton.setOnClickListener {
-                            if (isEnabled) {
+                        setOnClickListener {
+                            if (state.isEmailFilledCorrectly && state.isPasswordFilledCorrectly) {
                                 viewModel.signInWithEmailAndPassword(
                                     binding.email.text.toString().trim(),
                                     binding.password.text.toString().trim()
@@ -189,6 +183,7 @@ class LoginFragment : Fragment() {
                             }
                         }
                     }
+                }
             }
         }
     }

@@ -3,9 +3,8 @@ package com.mbs.moneyguardian.presentation.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mbs.moneyguardian.data.auth.SignInResult
-import com.mbs.moneyguardian.data.auth.repository.AuthSignInRepository
+import com.mbs.moneyguardian.domain.usecase.SignInWithEmailAndPasswordUseCase
 import com.mbs.moneyguardian.presentation.uiState.LoginScreenState
-import com.mbs.moneyguardian.utils.extensions.isValidEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +14,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(private val authSignInRepository: AuthSignInRepository) :
-    ViewModel() {
+class SignInViewModel @Inject constructor(
+    private val signInWithEmailAndPasswordUseCase: SignInWithEmailAndPasswordUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginScreenState())
     val state = _state.asStateFlow()
@@ -37,7 +37,7 @@ class SignInViewModel @Inject constructor(private val authSignInRepository: Auth
     fun signInWithEmailAndPassword(email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _loading.update { true }
-            val result = authSignInRepository.signIn(email, password)
+            val result = signInWithEmailAndPasswordUseCase.invoke(email, password)
             if (result.success) {
                 _state.update {
                     it.copy(
@@ -57,20 +57,10 @@ class SignInViewModel @Inject constructor(private val authSignInRepository: Auth
         }
     }
 
-//    private fun validateSignInButton() {
-//        _state.update {
-//            val isFilledCorrectly = it.isPasswordFilledCorrectly && it.isEmailFilledCorrectly
-//            it.copy(
-//                isLoginButtonEnabled = isFilledCorrectly,
-//                loginButtonColorRes = if (isFilledCorrectly) R.color.primary else R.color.gray
-//            )
-//        }
-//    }
-
     fun validateEmail(email: String) {
         _state.update {
             it.copy(
-                isEmailFilledCorrectly = email.isValidEmail()
+                isEmailFilledCorrectly = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
             )
         }
     }
