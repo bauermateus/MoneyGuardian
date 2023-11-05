@@ -10,20 +10,27 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.mbs.moneyguardian.auth.GoogleAuthUiClient
-import com.mbs.moneyguardian.auth.SignInResult
-import com.mbs.moneyguardian.auth.SignInViewModel
+import com.mbs.moneyguardian.data.auth.SignInResult
+import com.mbs.moneyguardian.data.source.GoogleAuthUiClient
 import com.mbs.moneyguardian.databinding.FragmentLoginBinding
+import com.mbs.moneyguardian.presentation.uiState.isLoginButtonEnabled
+import com.mbs.moneyguardian.presentation.uiState.loginButtonColorRes
+import com.mbs.moneyguardian.presentation.viewModel.SignInViewModel
 import com.mbs.moneyguardian.utils.startLoad
 import com.mbs.moneyguardian.utils.stopLoad
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -43,7 +50,7 @@ class LoginFragment : Fragment() {
                     result.data?.let { intent ->
                         lifecycleScope.launch {
                             val signInResult = googleAuthUiClient.signInWithIntent(intent = intent)
-                            viewModel.onSignInResult(signInResult)
+                            viewModel.onGoogleSignInResult(signInResult)
                         }
                     }
                 }
@@ -66,6 +73,7 @@ class LoginFragment : Fragment() {
         )
         observe()
         onClick()
+        validateFields()
     }
 
     override fun onDestroyView() {
@@ -91,20 +99,16 @@ class LoginFragment : Fragment() {
         binding.signInWithGoogle.setOnClickListener {
             startGoogleSignIn()
         }
-        binding.loginButton.setOnClickListener {
-            loginWithEmailAndPassword()
-        }
     }
 
     /** This function needs to be executed before all other, this is the reason we use runBlocking. */
     private fun verifyCurrentUserState() {
         runBlocking {
             val currentUser = Firebase.auth.currentUser
-            if (currentUser != null) {
-                viewModel.onSignInResult(
+            currentUser?.let {
+                viewModel.onGoogleSignInResult(
                     result = SignInResult(
-                        username = currentUser.displayName,
-                        error = null
+                        success = true, error = null
                     )
                 )
             }
@@ -116,62 +120,76 @@ class LoginFragment : Fragment() {
         requireActivity().finish()
     }
 
-    private fun observe() {
-        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                startLoad(requireContext())
-            } else {
-                stopLoad()
+    private fun validateFields() {
+        with(binding) {
+            email.doAfterTextChanged {
+                viewModel.validateEmail(it.toString())
             }
-        }
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            if (state.isSignInSuccessful) {
-                viewModel.resetState()
-                navigate()
-            } else {
-                state.signInError?.let {
-                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                    viewModel.resetState()
-                }
+            password.doAfterTextChanged {
+                viewModel.validatePassword(it.toString())
             }
         }
     }
 
-    private fun loginWithEmailAndPassword() {
-        with(binding) {
-            if (email.text.isNullOrBlank()) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.fill_email_field), Toast.LENGTH_SHORT
-                ).show()
-                return
+    private fun observe() {
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.loading.collect { isLoading ->
+                    if (isLoading) {
+                        startLoad(requireContext())
+                    } else {
+                        stopLoad()
+                    }
+                }
+
             }
-            if (password.text.isNullOrBlank()) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.fill_password_field), Toast.LENGTH_SHORT
-                ).show()
-                return
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.state.map { it.isSignInSuccessful }.collect {
+                        if (it) {
+                            navigate()
+                        }
+                    }
+
+                viewModel.state.map { it.signInError }.collect {
+                        it?.let {
+                            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                viewModel.state.map { it.loginButtonColorRes }.collect { colorRes ->
+                        binding.loginButton.setBackgroundColor(
+                            ContextCompat.getColor(
+                                requireContext(), colorRes
+                            )
+                        )
+                    }
+
+                viewModel.state
+                    .map { it.isLoginButtonEnabled }
+                    .distinctUntilChanged()
+                    .collect { isEnabled ->
+                        binding.loginButton.setOnClickListener {
+                            if (isEnabled) {
+                                viewModel.signInWithEmailAndPassword(
+                                    binding.email.text.toString().trim(),
+                                    binding.password.text.toString().trim()
+                                )
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Preencha os campos corretamente.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
             }
-            viewModel.initLoading()
-            Firebase.auth.signInWithEmailAndPassword(
-                email.text.toString().trim(),
-                password.text.toString().trim()
-            ).addOnSuccessListener { result ->
-                viewModel.onSignInResult(
-                    result = SignInResult(
-                        username = result.user?.displayName,
-                        error = null
-                    )
-                )
-            }
-        }.addOnFailureListener { exception ->
-            viewModel.onSignInResult(
-                result = SignInResult(
-                    username = null,
-                    error = exception.message
-                )
-            )
         }
     }
 }

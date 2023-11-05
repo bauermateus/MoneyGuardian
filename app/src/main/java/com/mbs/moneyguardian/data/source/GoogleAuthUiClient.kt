@@ -1,4 +1,4 @@
-package com.mbs.moneyguardian.auth
+package com.mbs.moneyguardian.data.source
 
 import android.content.Context
 import android.content.Intent
@@ -11,6 +11,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.mbs.moneyguardian.R
+import com.mbs.moneyguardian.data.auth.SignInResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
@@ -40,15 +41,14 @@ class GoogleAuthUiClient(
         return try {
             val signInRequest = auth.signInWithCredential(googleCredentials).await()
             SignInResult(
-                username = signInRequest.user?.displayName,
+                success = signInRequest.user != null,
                 error = null
             )
         } catch (e: Exception) {
             e.printStackTrace()
-            if (e is CancellationException) throw e
             SignInResult(
-                username = null,
-                error = e.message
+                success = false,
+                error = e
             )
         }
 
