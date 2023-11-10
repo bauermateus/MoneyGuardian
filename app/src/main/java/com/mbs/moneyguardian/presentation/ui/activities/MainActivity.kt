@@ -1,4 +1,4 @@
-package com.mbs.moneyguardian
+package com.mbs.moneyguardian.presentation.ui.activities
 
 import android.os.Bundle
 import android.view.animation.Animation

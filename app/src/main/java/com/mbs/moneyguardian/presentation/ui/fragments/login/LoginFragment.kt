@@ -1,4 +1,4 @@
-package com.mbs.moneyguardian
+package com.mbs.moneyguardian.presentation.ui.fragments.login
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
@@ -14,13 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.mbs.moneyguardian.R
 import com.mbs.moneyguardian.auth.GoogleAuthUiClient
 import com.mbs.moneyguardian.auth.SignInResult
 import com.mbs.moneyguardian.auth.SignInViewModel
 import com.mbs.moneyguardian.databinding.FragmentLoginBinding
+import com.mbs.moneyguardian.presentation.ui.activities.MainActivity
 import com.mbs.moneyguardian.utils.startLoad
 import com.mbs.moneyguardian.utils.stopLoad
 import dagger.hilt.android.AndroidEntryPoint

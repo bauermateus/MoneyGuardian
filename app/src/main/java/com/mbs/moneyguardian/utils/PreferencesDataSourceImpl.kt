@@ -19,13 +19,13 @@ class PreferencesDataSourceImpl(
     private val dataStore: DataStore<Preferences>
 ): PreferencesDataSource {
 
-    suspend fun getString(key: String): String? {
+    override suspend fun getString(key: String): String? {
         val dataStoreKey = stringPreferencesKey(name = key)
         val preferences = dataStore.data.first()
         return preferences[dataStoreKey]
     }
 
-    suspend fun putString(
+    override suspend fun saveString(
         key: String,
         value: String
     ) {
